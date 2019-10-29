@@ -2,7 +2,7 @@
 
 
 $catalog = [
-    46 => [
+        46 => [
         'name' => 'Pecan nuts',
         'description' => 'Cooked by Penny !',
     ],

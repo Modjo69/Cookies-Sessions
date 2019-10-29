@@ -1,3 +1,25 @@
+<?php
+
+if(!$logout){
+    session_start();
+}
+setcookie('loginname', 'modjo', time() + 365 * 24 * 3600);
+$_COOKIE['loginname'] = $_SESSION['loginname'];
+if ($logout) {
+    session_destroy();
+    setcookie("panier", "", time() - 3600);
+}
+if (isset ($_GET['add_to_cart'])){
+    setcookie('panier', $_COOKIE['panier']. " " . $_GET['add_to_cart']);
+
+}
+$liste = explode(" ", $_COOKIE['panier']);
+$totalPanier=(count($liste)-1);
+if (isset ($_GET['add_to_cart'])) {
+    $totalPanier++;
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,23 +53,42 @@
                 </a>
             </div>
 
+
+
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#">Chocolates chips</a></li>
                     <li><a href="#">Nuts</a></li>
                     <li><a href="#">Gluten full</a></li>
-                    <li>
-                        <a href="/cart.php" class="btn btn-warning navbar-btn">
-                            <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
-                            Cart
+                    <?php if (isset($_COOKIE['loginname'])){ ?>
+
+                    <li><a href="logout.php">Logout</a><li>
+
+
+                        <?php }else{  ?>
+
+                    <li><a href="login.php">Login</a><li>
+
+                       <?php } ?>
+                        <a <?php if (isset($_SESSION['loginname'])){ ?>
+                            href="/cart.php" class="btn btn-warning navbar-btn">
+                        <?php }else{ ?>
+
+                                href="/login.php" class="btn btn-warning navbar-btn">
+                            <?php } ?>
+                            <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"><?php echo $totalPanier  ?></span>
+
                         </a>
                     </li>
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
-    <div class="container-fluid text-right">
-        <strong>Hello Wilder !</strong>
+    <?php if (isset($_SESSION['loginname'])& ($_SERVER['REQUEST_URI'] !='/cart.php')& ($_SERVER['REQUEST_URI'] !='/login.php')){ ?>
+    <div class="container-fluid text-left">
+        <strong>Hello <?php echo $_COOKIE['loginname']; ?> , we happy to see you back !</strong>
     </div>
+    <?php }
+   ;?>
 </header>
